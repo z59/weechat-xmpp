@@ -177,6 +177,17 @@ jabber_server_options = {
                        "change_cb"    : "",
                        "delete_cb"    : "",
                        },
+    "autojoin"       : { "type"         : "string",
+                       "desc"         : "auto join some room at the connection, eq. test@conference.talk.google.com, foo@bar.com",
+                       "min"          : 0,
+                       "max"          : 0,
+                       "string_values": "",
+                       "default"      : "",
+                       "value"        : "",
+                       "check_cb"     : "",
+                       "change_cb"    : "",
+                       "delete_cb"    : "",
+                       },
     "port"         : { "type"         : "integer",
                        "desc"         : "connect server port, eg. 5223",
                        "min"          : 0,
@@ -446,7 +457,7 @@ class Server:
         return weechat.config_boolean(self.options[option_name])
 
     def option_integer(self, option_name):
-        """ Return a server option, as string. """
+        """ Return a server option, as integer. """
         return weechat.config_integer(self.options[option_name])
 
     def connect(self):
@@ -521,6 +532,13 @@ class Server:
                 weechat.buffer_set(self.buffer, "localvar_set_nick", self.buddy.username);
                 hook_away = weechat.hook_command_run("/away -all*", "jabber_away_command_run_cb", "")
 
+                # Joining rooms registerer in autojoin server option
+                autojoins = self.option_string("autojoin")
+                weechat.prnt("", "Autojoins: %s" % autojoins)
+                rooms = [room.strip() for room in autojoins.split(',')]
+                for room in rooms:
+                    weechat.prnt("", "Joining '%s'" % room)
+                    jabber_cmd_room(None, self.buffer, "%s" % room)
 
                 # setting initial presence
                 priority = weechat.config_integer(self.options['priority'])
@@ -1496,6 +1514,7 @@ def jabber_hook_commands_and_completions():
                          "Other jabber commands:\n"
                          "  Chat with a buddy (pv buffer): /jchat\n"
                          "  Add buddy to roster:           /invite\n"
+                         "  Join a Romm:                   /jroom\n"
                          "  Remove buddy from roster:      /kick\n"
                          "  Send message to buddy:         /jmsg",
                          "list %(jabber_servers)"
@@ -1517,7 +1536,7 @@ def jabber_hook_commands_and_completions():
                          "",
                          "jabber_cmd_jchat", "")
     weechat.hook_command("jroom", "Manage XMPP rooms",
-                         "<room>",
+                         "<room> [-autojoin]",
                          "room: MUC jid",
                          "",
                          "jabber_cmd_room", "")
@@ -1720,14 +1739,16 @@ def jabber_cmd_room(data, buffer, args):
             nickname = None
         else:
             nickname = argv[1]
-
         context = jabber_search_context(buffer)
-        if context["server"]:
-            buddy = context["server"].search_buddy_list(args, by='alias')
+        server = context["server"]
+        if server:
+            buddy = server.search_buddy_list(args, by='alias')
             if not buddy:
-                buddy = context["server"].add_muc(room, nickname)
+                buddy = server.add_muc(room, nickname)
             if not buddy.chat:
-                context["server"].add_chat(buddy)
+                server.add_chat(buddy)
+            if "-autojoin" in argv:
+                weechat.prnt("", "autojoin activated for %s" % room)
             weechat.buffer_set(buddy.chat.buffer, "display", "auto")
             weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
             weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
