@@ -1732,6 +1732,7 @@ def jabber_cmd_jchat(data, buffer, args):
 
 def jabber_cmd_room(data, buffer, args):
     """ Command '/jroom'. """
+    global jabber_config_file
     if args:
         argv = args.split()
         room = argv[0]
@@ -1748,7 +1749,13 @@ def jabber_cmd_room(data, buffer, args):
             if not buddy.chat:
                 server.add_chat(buddy)
             if "-autojoin" in argv:
-                weechat.prnt("", "autojoin activated for %s" % room)
+                autojoins = [r.strip() for r in server.option_string("autojoin").split(',')]
+                autojoins.append(room)
+                autojoins = ", ".join(autojoins)
+                server.options['autojoin'] = autojoins
+                # TODO: Needs help here #PLS #TotallyLost (It doesn't want to work)
+                r = weechat.config_write_option(jabber_config_file, server.options['autojoin'])
+                weechat.prnt("", "Response: %s" % server.option_string("autojoin"))
             weechat.buffer_set(buddy.chat.buffer, "display", "auto")
             weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
             weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
