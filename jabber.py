@@ -539,7 +539,6 @@ class Server:
                 for room in rooms:
                     weechat.prnt("", "Joining '%s'" % room)
                     jabber_cmd_room(None, self.buffer, "%s" % room)
-
                 # setting initial presence
                 priority = weechat.config_integer(self.options['priority'])
                 self.set_presence(show="",priority=priority)
@@ -1736,10 +1735,15 @@ def jabber_cmd_room(data, buffer, args):
     if args:
         argv = args.split()
         room = argv[0]
+        autojoin = "-autojoin" in argv
         if len(argv) == 1:
             nickname = None
+        elif len(argv) == 2:
+            nickname = argv[1] if argv[1] != "-autojoin" else None
+            autojoin = argv[1] == "-autojoin"
         else:
             nickname = argv[1]
+            autojoin = argv[2]
         context = jabber_search_context(buffer)
         server = context["server"]
         if server:
@@ -1748,14 +1752,11 @@ def jabber_cmd_room(data, buffer, args):
                 buddy = server.add_muc(room, nickname)
             if not buddy.chat:
                 server.add_chat(buddy)
-            if "-autojoin" in argv:
+            if autojoin:
                 autojoins = [r.strip() for r in server.option_string("autojoin").split(',')]
                 autojoins.append(room)
                 autojoins = ", ".join(autojoins)
-                server.options['autojoin'] = autojoins
-                # TODO: Needs help here #PLS #TotallyLost (It doesn't want to work)
-                r = weechat.config_write_option(jabber_config_file, server.options['autojoin'])
-                weechat.prnt("", "Response: %s" % server.option_string("autojoin"))
+                r = weechat.config_option_set(server.options["autojoin"], autojoins, 1)
             weechat.buffer_set(buddy.chat.buffer, "display", "auto")
             weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
             weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
