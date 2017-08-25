@@ -1514,7 +1514,7 @@ def jabber_hook_commands_and_completions():
                          "Other jabber commands:\n"
                          "  Chat with a buddy (pv buffer): /jchat\n"
                          "  Add buddy to roster:           /invite\n"
-                         "  Join a Romm:                   /jroom\n"
+                         "  Join a Room:                   /jroom\n"
                          "  Remove buddy from roster:      /kick\n"
                          "  Send message to buddy:         /jmsg",
                          "list %(jabber_servers)"
