@@ -1775,7 +1775,7 @@ def jabber_cmd_room(data, buffer, args):
     global jabber_config_file
 
     if not args:
-        weechat.prnt("", "Usage: /jroom <roomname>@conference.<server_FQDN> [<optional_user_nickname>]")
+        weechat.prnt("", "Usage: /jroom <roomname>@conference.<server_FQDN> [<optional_user_nickname>] [-autojoin]")
         return weechat.WEECHAT_RC_OK
 
     argv = args.split()
