@@ -85,11 +85,11 @@
 #     first version (unofficial)
 #
 
-SCRIPT_NAME    = "jabber"
-SCRIPT_AUTHOR  = "Sebastien Helleu <flashcode@flashtux.org>"
+SCRIPT_NAME = "jabber"
+SCRIPT_AUTHOR = "Sebastien Helleu <flashcode@flashtux.org>"
 SCRIPT_VERSION = "1.6"
 SCRIPT_LICENSE = "GPL3"
-SCRIPT_DESC    = "Jabber/XMPP protocol for WeeChat"
+SCRIPT_DESC = "Jabber/XMPP protocol for WeeChat"
 SCRIPT_COMMAND = SCRIPT_NAME
 
 import re
@@ -108,7 +108,7 @@ except:
 # deprecated sha and md5. Since the code producing those warnings is
 # outside this script, catch them and ignore.
 original_filters = warnings.filters[:]
-warnings.filterwarnings("ignore",category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 try:
     import xmpp
 except:
@@ -122,145 +122,146 @@ finally:
 
 jabber_servers = []
 jabber_server_options = {
-    "jid"          : { "type"         : "string",
-                       "desc"         : "jabber id (user@server.tld)",
-                       "min"          : 0,
-                       "max"          : 0,
+    "jid": {"type": "string",
+            "desc": "jabber id (user@server.tld)",
+            "min": 0,
+            "max": 0,
+            "string_values": "",
+            "default": "",
+                       "value": "",
+                       "check_cb": "",
+                       "change_cb": "",
+                       "delete_cb": "",
+            },
+    "priority": {"type": "integer",
+                 "desc": "Default resource priority",
+                 "min": 0,
+                 "max": 65535,
+                 "string_values": "",
+                 "default": "8",
+                 "value": "8",
+                 "check_cb": "",
+                 "change_cb": "",
+                 "delete_cb": "",
+                 },
+    "away_priority": {"type": "integer",
+                      "desc": "Resource priority on away",
+                      "min": 0,
+                      "max": 65535,
+                      "string_values": "",
+                      "default": "0",
+                      "value": "0",
+                      "check_cb": "",
+                      "change_cb": "",
+                      "delete_cb": "",
+                      },
+    "password": {"type": "string",
+                 "desc": "password for jabber id on server",
+                 "min": 0,
+                 "max": 0,
+                 "string_values": "",
+                 "default": "",
+                 "value": "",
+                 "check_cb": "",
+                 "change_cb": "",
+                 "delete_cb": "",
+                 },
+    "server": {"type": "string",
+               "desc": "connect server host or ip, eg. talk.google.com",
+               "min": 0,
+                       "max": 0,
                        "string_values": "",
-                       "default"      : "",
-                       "value"        : "",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "priority"     : { "type"         : "integer",
-                       "desc"         : "Default resource priority",
-                       "min"          : 0,
-                       "max"          : 65535,
-                       "string_values": "",
-                       "default"      : "8",
-                       "value"        : "8",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "away_priority": { "type"         : "integer",
-                       "desc"         : "Resource priority on away",
-                       "min"          : 0,
-                       "max"          : 65535,
-                       "string_values": "",
-                       "default"      : "0",
-                       "value"        : "0",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "password"     : { "type"         : "string",
-                       "desc"         : "password for jabber id on server",
-                       "min"          : 0,
-                       "max"          : 0,
-                       "string_values": "",
-                       "default"      : "",
-                       "value"        : "",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "server"       : { "type"         : "string",
-                       "desc"         : "connect server host or ip, eg. talk.google.com",
-                       "min"          : 0,
-                       "max"          : 0,
-                       "string_values": "",
-                       "default"      : "",
-                       "value"        : "",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "autojoin"       : { "type"         : "string",
-                       "desc"         : "auto join some room at the connection, eq. test@conference.talk.google.com, foo@bar.com",
-                       "min"          : 0,
-                       "max"          : 0,
-                       "string_values": "",
-                       "default"      : "",
-                       "value"        : "",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "port"         : { "type"         : "integer",
-                       "desc"         : "connect server port, eg. 5223",
-                       "min"          : 0,
-                       "max"          : 65535,
-                       "string_values": "",
-                       "default"      : "5222",
-                       "value"        : "5222",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "autoconnect"  : { "type"         : "boolean",
-                       "desc"         : "automatically connect to server when script is starting",
-                       "min"          : 0,
-                       "max"          : 0,
-                       "string_values": "",
-                       "default"      : "off",
-                       "value"        : "off",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "autoreconnect": { "type"         : "boolean",
-                       "desc"         : "automatically reconnect to server when disconnected",
-                       "min"          : 0,
-                       "max"          : 0,
-                       "string_values": "",
-                       "default"      : "off",
-                       "value"        : "off",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "private"      : { "type"         : "boolean",
-                       "desc"         : "display messages in separate chat buffers instead of a single server buffer",
-                       "min"          : 0,
-                       "max"          : 0,
-                       "string_values": "",
-                       "default"      : "on",
-                       "value"        : "on",
-                       "check_cb"     : "",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "ping_interval": { "type"         : "integer",
-                       "desc"         : "Number of seconds between server pings. 0 = disable",
-                       "min"          : 0,
-                       "max"          : 9999999,
-                       "string_values": "",
-                       "default"      : "0",
-                       "value"        : "0",
-                       "check_cb"     : "ping_interval_check_cb",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    "ping_timeout" : { "type"         : "integer",
-                       "desc"         : "Number of seconds to allow ping to respond before timing out",
-                       "min"          : 0,
-                       "max"          : 9999999,
-                       "string_values": "",
-                       "default"      : "10",
-                       "value"        : "10",
-                       "check_cb"     : "ping_timeout_check_cb",
-                       "change_cb"    : "",
-                       "delete_cb"    : "",
-                       },
-    }
+                       "default": "",
+                       "value": "",
+                       "check_cb": "",
+                       "change_cb": "",
+                       "delete_cb": "",
+               },
+    "autojoin": {"type": "string",
+                 "desc": "auto join some room at the connection, eq. test@conference.talk.google.com, foo@bar.com",
+                 "min": 0,
+                 "max": 0,
+                 "string_values": "",
+                 "default": "",
+                 "value": "",
+                 "check_cb": "",
+                 "change_cb": "",
+                 "delete_cb": "",
+                 },
+    "port": {"type": "integer",
+             "desc": "connect server port, eg. 5223",
+             "min": 0,
+             "max": 65535,
+             "string_values": "",
+             "default": "5222",
+             "value": "5222",
+             "check_cb": "",
+             "change_cb": "",
+             "delete_cb": "",
+             },
+    "autoconnect": {"type": "boolean",
+                    "desc": "automatically connect to server when script is starting",
+                    "min": 0,
+                    "max": 0,
+                    "string_values": "",
+                    "default": "off",
+                    "value": "off",
+                    "check_cb": "",
+                    "change_cb": "",
+                    "delete_cb": "",
+                    },
+    "autoreconnect": {"type": "boolean",
+                      "desc": "automatically reconnect to server when disconnected",
+                      "min": 0,
+                      "max": 0,
+                      "string_values": "",
+                      "default": "off",
+                      "value": "off",
+                      "check_cb": "",
+                      "change_cb": "",
+                      "delete_cb": "",
+                      },
+    "private": {"type": "boolean",
+                "desc": "display messages in separate chat buffers instead of a single server buffer",
+                "min": 0,
+                "max": 0,
+                "string_values": "",
+                "default": "on",
+                "value": "on",
+                "check_cb": "",
+                "change_cb": "",
+                "delete_cb": "",
+                },
+    "ping_interval": {"type": "integer",
+                      "desc": "Number of seconds between server pings. 0 = disable",
+                      "min": 0,
+                      "max": 9999999,
+                      "string_values": "",
+                      "default": "0",
+                      "value": "0",
+                      "check_cb": "ping_interval_check_cb",
+                      "change_cb": "",
+                      "delete_cb": "",
+                      },
+    "ping_timeout": {"type": "integer",
+                     "desc": "Number of seconds to allow ping to respond before timing out",
+                     "min": 0,
+                     "max": 9999999,
+                     "string_values": "",
+                     "default": "10",
+                     "value": "10",
+                     "check_cb": "ping_timeout_check_cb",
+                     "change_cb": "",
+                     "delete_cb": "",
+                     },
+}
 jabber_config_file = None
 jabber_config_section = {}
 jabber_config_option = {}
 jabber_jid_aliases = {}             # { 'alias1': 'jid1', 'alias2': 'jid2', ... }
 
 # =================================[ config ]=================================
+
 
 def jabber_config_init():
     """ Initialize config file: create sections and options in memory. """
@@ -309,9 +310,11 @@ def jabber_config_init():
         weechat.config_free(jabber_config_file)
         return
 
+
 def jabber_config_reload_cb(data, config_file):
     """ Reload config file. """
     return weechat.config_reload(config_file)
+
 
 def jabber_config_server_read_cb(data, config_file, section, option_name, value):
     """ Read server option in config file. """
@@ -327,6 +330,7 @@ def jabber_config_server_read_cb(data, config_file, section, option_name, value)
             rc = weechat.config_option_set(server.options[items[1]], value, 1)
     return rc
 
+
 def jabber_config_server_write_cb(data, config_file, section_name):
     """ Write server section in config file. """
     global jabber_servers
@@ -335,6 +339,7 @@ def jabber_config_server_write_cb(data, config_file, section_name):
         for name, option in sorted(server.options.items()):
             weechat.config_write_option(config_file, option)
     return weechat.WEECHAT_RC_OK
+
 
 def jabber_config_jid_aliases_read_cb(data, config_file, section, option_name, value):
     """ Read jid_aliases option in config file. """
@@ -348,6 +353,7 @@ def jabber_config_jid_aliases_read_cb(data, config_file, section, option_name, v
         return weechat.WEECHAT_CONFIG_OPTION_SET_ERROR
     return weechat.WEECHAT_CONFIG_OPTION_SET_OK_CHANGED
 
+
 def jabber_config_jid_aliases_write_cb(data, config_file, section_name):
     """ Write jid_aliases section in config file. """
     global jabber_jid_aliases
@@ -356,15 +362,18 @@ def jabber_config_jid_aliases_write_cb(data, config_file, section_name):
         weechat.config_write_line(config_file, alias, jid)
     return weechat.WEECHAT_RC_OK
 
+
 def jabber_config_read():
     """ Read jabber config file (jabber.conf). """
     global jabber_config_file
     return weechat.config_read(jabber_config_file)
 
+
 def jabber_config_write():
     """ Write jabber config file (jabber.conf). """
     global jabber_config_file
     return weechat.config_write(jabber_config_file)
+
 
 def jabber_debug_enabled():
     """ Return True if debug is enabled. """
@@ -373,6 +382,7 @@ def jabber_debug_enabled():
         return True
     return False
 
+
 def jabber_config_color(color):
     """ Return color code for a jabber color option. """
     global jabber_config_option
@@ -380,13 +390,14 @@ def jabber_config_color(color):
         return weechat.color(weechat.config_color(jabber_config_option[color]))
     return ""
 
+
 def ping_timeout_check_cb(server_name, option, value):
     global jabber_config_file, jabber_config_section
     ping_interval_option = weechat.config_search_option(
         jabber_config_file,
         jabber_config_section["server"],
         "%s.ping_interval" % (server_name)
-        )
+    )
     ping_interval = weechat.config_integer(ping_interval_option)
     if int(ping_interval) and int(value) >= int(ping_interval):
         weechat.prnt("", "\njabber: unable to update 'ping_timeout' for server %s" % (server_name))
@@ -394,13 +405,14 @@ def ping_timeout_check_cb(server_name, option, value):
         return weechat.WEECHAT_CONFIG_OPTION_SET_ERROR
     return weechat.WEECHAT_CONFIG_OPTION_SET_OK_CHANGED
 
+
 def ping_interval_check_cb(server_name, option, value):
     global jabber_config_file, jabber_config_section
     ping_timeout_option = weechat.config_search_option(
         jabber_config_file,
         jabber_config_section["server"],
         "%s.ping_timeout" % (server_name)
-        )
+    )
     ping_timeout = weechat.config_integer(ping_timeout_option)
     if int(value) and int(ping_timeout) >= int(value):
         weechat.prnt("", "\njabber: unable to update 'ping_interval' for server %s" % (server_name))
@@ -409,6 +421,7 @@ def ping_interval_check_cb(server_name, option, value):
     return weechat.WEECHAT_CONFIG_OPTION_SET_OK_CHANGED
 
 # ================================[ servers ]=================================
+
 
 class Server:
     """ Class to manage a server: buffer, connection, send/recv data. """
@@ -502,7 +515,7 @@ class Server:
         # warning. Since the code producing the warning is outside this script,
         # catch it and ignore.
         original_filters = warnings.filters[:]
-        warnings.filterwarnings("ignore",category=DeprecationWarning)
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
         try:
             conn = self.client.connect(server=server_tuple)
         finally:
@@ -529,7 +542,7 @@ class Server:
                 self.sock = self.client.Connection._sock.fileno()
                 self.hook_fd = weechat.hook_fd(self.sock, 1, 0, 0, "jabber_fd_cb", "")
                 weechat.buffer_set(self.buffer, "highlight_words", self.buddy.username)
-                weechat.buffer_set(self.buffer, "localvar_set_nick", self.buddy.username);
+                weechat.buffer_set(self.buffer, "localvar_set_nick", self.buddy.username)
                 hook_away = weechat.hook_command_run("/away -all*", "jabber_away_command_run_cb", "")
 
                 # Joining rooms registerer in autojoin server option
@@ -541,8 +554,7 @@ class Server:
                     jabber_cmd_room(None, self.buffer, "%s" % room)
                 # setting initial presence
                 priority = weechat.config_integer(self.options['priority'])
-                self.set_presence(show="",priority=priority)
-
+                self.set_presence(show="", priority=priority)
 
                 self.ping_up = True
             else:
@@ -598,7 +610,7 @@ class Server:
 
     def muc_presence(self, muc, conn, node):
         chan_user = muc.search_buddy_list(node.getFrom().getResource().encode("utf-8"), by='name')
-        action='update'
+        action = 'update'
         if not chan_user:
             chan_user = muc.add_buddy(jid=node.getFrom())
 
@@ -613,7 +625,7 @@ class Server:
                 muc.rename_buddy(buddy=chan_user, old_nick=node.getFrom().getResource().encode("utf-8"))
                 return
             else:
-                action='remove'
+                action = 'remove'
 
         muc.update_nicklist(buddy=chan_user, action=action, role=role)
 
@@ -625,10 +637,10 @@ class Server:
             return
         if not buddy:
             buddy = self.add_buddy(jid=node.getFrom())
-        action='update'
+        action = 'update'
         node_type = node.getType()
         if node_type in ["error", "unavailable"]:
-            action='remove'
+            action = 'remove'
         if action == 'update':
             away = node.getShow() in ["away", "xa"]
             status = ''
@@ -702,7 +714,7 @@ class Server:
         try:
             self.client.Process(1)
         except xmpp.protocol.StreamError as e:
-            weechat.prnt('', '%s: Error from server: %s' %(SCRIPT_NAME, e))
+            weechat.prnt('', '%s: Error from server: %s' % (SCRIPT_NAME, e))
             self.disconnect()
             if weechat.config_boolean(self.options['autoreconnect']):
                 autoreconnect_delay = 30
@@ -749,8 +761,8 @@ class Server:
         elif isinstance(buddy, MUC):
             recipient = buddy.jid
             if self.client:
-               msg = xmpp.protocol.Message(to=recipient, body=message, typ="groupchat")
-               self.client.send(msg)
+                msg = xmpp.protocol.Message(to=recipient, body=message, typ="groupchat")
+                self.client.send(msg)
 
     def send_message_from_input(self, input=''):
         """ Send a message from input text on server buffer. """
@@ -760,7 +772,7 @@ class Server:
         if not re.compile(r'.+[:,].+').match(input):
             weechat.prnt(self.buffer, "%sjabber: %s" % (weechat.prefix("network"),
                 "Invalid send format. Use  jid: message"
-                ))
+                                                        ))
             return
         name, message = re.split('[:,]', input, maxsplit=1)
         buddy = self.search_buddy_list(name, by='alias')
@@ -804,9 +816,12 @@ class Server:
         self.set_presence(show, status, priority)
 
     def set_presence(self, show=None, status=None, priority=None):
-        if not show == None: self.presence.setShow(show)
-        if not status == None: self.presence.setStatus(status)
-        if not priority == None: self.presence.setPriority(priority)
+        if not show == None:
+            self.presence.setShow(show)
+        if not status == None:
+            self.presence.setStatus(status)
+        if not priority == None:
+            self.presence.setPriority(priority)
         self.client.send(self.presence)
 
     def add_buddy(self, jid=None):
@@ -833,18 +848,18 @@ class Server:
         weechat.prnt(self.buffer, "")
         weechat.prnt(self.buffer, "Buddies:")
 
-        len_max = { 'alias': 5, 'jid': 5 }
+        len_max = {'alias': 5, 'jid': 5}
         lines = []
         for buddy in sorted(self.buddies, key=lambda x: x.jid.getStripped().encode('utf-8')):
             alias = ''
             if buddy.alias != buddy.bare_jid:
                 alias = buddy.alias
             buddy_jid_string = buddy.jid.getStripped().encode('utf-8')
-            lines.append( {
+            lines.append({
                 'jid': buddy_jid_string,
                 'alias': alias,
                 'status': buddy.away_string(),
-                })
+            })
             if len(alias) > len_max['alias']:
                 len_max['alias'] = len(alias)
             if len(buddy_jid_string) > len_max['jid']:
@@ -856,7 +871,7 @@ class Server:
                                                     line['jid'],
                                                     line['alias'],
                                                     line['status'],
-                                                    ))
+                                                     ))
 
     def stringify_jid(self, jid, wresource=1):
         """ Serialise JID into string.
@@ -958,7 +973,7 @@ class Server:
             self.delete_ping_timer()
         if not self.option_integer('ping_interval'):
             return
-        self.ping_timer = weechat.hook_timer( self.option_integer('ping_interval') * 1000,
+        self.ping_timer = weechat.hook_timer(self.option_integer('ping_interval') * 1000,
                 0, 0, "jabber_ping_timer", self.name)
         return
 
@@ -974,8 +989,8 @@ class Server:
         if not self.option_integer('ping_timeout'):
             return
         self.ping_timeout_timer = weechat.hook_timer(
-                self.option_integer('ping_timeout') * 1000, 0, 1,
-                "jabber_ping_timeout_timer", self.name)
+            self.option_integer('ping_timeout') * 1000, 0, 1,
+            "jabber_ping_timeout_timer", self.name)
         return
 
     def delete_ping_timeout_timer(self):
@@ -989,7 +1004,7 @@ class Server:
             if not self.connect():
                 return
         iq = xmpp.protocol.Iq(to=self.buddy.domain, typ='get')
-        iq.addChild( name= "ping", namespace = "urn:xmpp:ping" )
+        iq.addChild(name="ping", namespace="urn:xmpp:ping")
         id = self.client.send(iq)
         self.print_debug_handler("ping", iq)
         self.add_ping_timeout_timer()
@@ -1014,7 +1029,7 @@ class Server:
             weechat.unhook(self.hook_fd)
             self.hook_fd = None
         if self.client != None:
-            #if self.client.isConnected():
+            # if self.client.isConnected():
             #    self.client.disconnect()
             self.client = None
             self.jid = None
@@ -1040,12 +1055,14 @@ class Server:
             for name, option in self.options.items():
                 weechat.config_option_free(option)
 
+
 def eval_expression(option_name):
     """ Return a evaluated expression """
     if int(version) >= 0x00040200:
-        return weechat.string_eval_expression(option_name,{},{},{})
+        return weechat.string_eval_expression(option_name, {}, {}, {})
     else:
         return option_name
+
 
 def jabber_search_server_by_name(name):
     """ Search a server by name. """
@@ -1055,10 +1072,11 @@ def jabber_search_server_by_name(name):
             return server
     return None
 
+
 def jabber_search_context(buffer):
     """ Search a server / chat for a buffer. """
     global jabber_servers
-    context = { "server": None, "chat": None }
+    context = {"server": None, "chat": None}
     for server in jabber_servers:
         if server.buffer == buffer:
             context["server"] = server
@@ -1069,6 +1087,7 @@ def jabber_search_context(buffer):
                 context["chat"] = chat
                 return context
     return context
+
 
 def jabber_search_context_by_name(server_name):
     """Search for buffer given name of server. """
@@ -1134,15 +1153,15 @@ class Chat:
                          % weechat.prefix("error"))
             return
         self.server.send_message(self.buddy, message)
-		# On a MUC we will receive our messages
+        # On a MUC we will receive our messages
         if not isinstance(self.buddy, MUC):
             weechat.prnt_date_tags(self.buffer, 0,
                                 "notify_none,no_highlight,nick_%s,prefix_nick_%s,log1" %
                                 (self.server.buddy.alias,
                                     weechat.config_string(weechat.config_get("weechat.color.chat_nick_self"))),
                                 "%s%s\t%s" % (weechat.color("chat_nick_self"),
-                                                self.server.buddy.alias,
-                                                message))
+                                              self.server.buddy.alias,
+                                              message))
 
     def set_title(self, title):
         self.buffer_title = title
@@ -1170,6 +1189,7 @@ class Chat:
 
 class MUC:
     """ Class to manage XMPP MUC. """
+
     def __init__(self, jid=None, chat=None, server=None):
         """ Init MUC
 
@@ -1245,17 +1265,17 @@ class MUC:
         weechat.prnt(self.chat.buffer, "")
         weechat.prnt(self.chat.buffer, "Buddies:")
 
-        len_max = { 'alias': 5, 'jid': 5 }
+        len_max = {'alias': 5, 'jid': 5}
         lines = []
         for buddy in sorted(self.buddies, key=lambda x: str(x.jid)):
             alias = ''
             if buddy.alias != buddy.bare_jid:
                 alias = buddy.alias
-            lines.append( {
+            lines.append({
                 'jid': str(buddy.jid),
                 'alias': alias,
                 'status': buddy.away_string(),
-                })
+            })
             if len(alias) > len_max['alias']:
                 len_max['alias'] = len(alias)
             if len(str(buddy.jid)) > len_max['jid']:
@@ -1265,9 +1285,9 @@ class MUC:
         for line in lines:
             weechat.prnt(self.chat.buffer, prnt_format % (weechat.color("chat_nick"),
                                                     line['jid'],
-                                                    line['alias'],
-                                                    line['status'],
-                                                    ))
+                line['alias'],
+                line['status'],
+            ))
 
     def search_buddy_list(self, name, by='jid'):
         """ Search for a buddy by name.
@@ -1315,11 +1335,11 @@ class MUC:
         color = 'message_join'
 
         msg = "%s%s%s%s is now known as %s" % \
-                       (weechat.prefix("action"),
-                        weechat.color("chat_nick"),
-                        old_nick,
-                        weechat.color("msg"),
-                        buddy.resource)
+            (weechat.prefix("action"),
+         weechat.color("chat_nick"),
+         old_nick,
+         weechat.color("msg"),
+         buddy.resource)
         weechat.prnt(self.chat.buffer, msg)
 
     def update_nicklist(self, buddy=None, action=None, role=None):
@@ -1363,9 +1383,11 @@ class MUC:
                             msg))
         return
 
+
 class Buddy:
     """ Class to manage buddies. """
-    def __init__(self, jid=None, chat=None, server=None ):
+
+    def __init__(self, jid=None, chat=None, server=None):
         """ Init buddy
 
         Args:
@@ -1407,10 +1429,10 @@ class Buddy:
         if not self.status:
             str_colon = ""
         return "%s(%saway%s%s%s)" % (weechat.color("chat_delimiters"),
-                                      weechat.color("chat"),
-                                      str_colon,
-                                      self.status.replace("\n", " "),
-                                      weechat.color("chat_delimiters"))
+                                     weechat.color("chat"),
+                                     str_colon,
+                                     self.status.replace("\n", " "),
+                                     weechat.color("chat_delimiters"))
 
     def parse_jid(self):
         """Parse the jid property.
@@ -1474,6 +1496,7 @@ class Buddy:
         return
 
 # ================================[ commands ]================================
+
 
 def jabber_hook_commands_and_completions():
     """ Hook commands and completions. """
@@ -1561,6 +1584,7 @@ def jabber_hook_commands_and_completions():
     weechat.hook_completion("jabber_jid_aliases", "list of jabber jid aliases",
                             "jabber_completion_jid_aliases", "")
 
+
 def jabber_list_servers_chats(name):
     """ List servers and chats. """
     global jabber_servers
@@ -1572,7 +1596,7 @@ def jabber_list_servers_chats(name):
                 conn_server = ''
                 if server.option_string("server"):
                     conn_server = ':'.join(
-                            (server.option_string("server"),
+                        (server.option_string("server"),
                             server.option_string("port")))
                 connected = ""
                 if server.sock >= 0:
@@ -1585,6 +1609,7 @@ def jabber_list_servers_chats(name):
     else:
         weechat.prnt("", "jabber: no server defined")
 
+
 def jabber_cmd_jabber(data, buffer, args):
     """ Command '/jabber'. """
     global jabber_servers, jabber_config_option
@@ -1595,7 +1620,7 @@ def jabber_cmd_jabber(data, buffer, args):
         argv1eol = ""
         pos = args.find(" ")
         if pos > 0:
-            argv1eol = args[pos+1:]
+            argv1eol = args[pos + 1:]
         if argv[0] == "list":
             jabber_list_servers_chats(argv[1])
         elif argv[0] == "add":
@@ -1610,8 +1635,10 @@ def jabber_cmd_jabber(data, buffer, args):
                         if conn_port and not conn_port.isdigit():
                             weechat.prnt("", "jabber: error, invalid port, digits only")
                             return weechat.WEECHAT_RC_OK
-                        if conn_server: kwargs['server'] = conn_server
-                        if conn_port: kwargs['port'] = conn_port
+                        if conn_server:
+                            kwargs['server'] = conn_server
+                        if conn_port:
+                            kwargs['port'] = conn_port
                     server = Server(argv[1], **kwargs)
                     jabber_servers.append(server)
                     weechat.prnt("", "jabber: server '%s' created" % argv[1])
@@ -1693,14 +1720,17 @@ def jabber_cmd_jabber(data, buffer, args):
             context = jabber_search_context(buffer)
             if context["server"]:
                 if len(argv) == 1:
-                    show =  context["server"].presence.getShow()
-                    if show == "": show = "online"
+                    show = context["server"].presence.getShow()
+                    if show == "":
+                        show = "online"
                     weechat.prnt("", "jabber: presence = %s" % show)
                 elif not re.match(r'^(?:online|chat|away|xa|dnd)$', argv[1]):
                     weechat.prnt("", "jabber: Presence should be one of: online, chat, away, xa, dnd")
                 else:
-                    if argv[1] == "online": show = ""
-                    else: show = argv[1]
+                    if argv[1] == "online":
+                        show = ""
+                    else:
+                        show = argv[1]
                     context["server"].set_presence(show=show)
         elif argv[0] == "buddies":
             context = jabber_search_context(buffer)
@@ -1716,6 +1746,7 @@ def jabber_cmd_jabber(data, buffer, args):
             weechat.prnt("", "jabber: unknown action")
     return weechat.WEECHAT_RC_OK
 
+
 def jabber_cmd_jchat(data, buffer, args):
     """ Command '/jchat'. """
     if args:
@@ -1730,6 +1761,7 @@ def jabber_cmd_jchat(data, buffer, args):
     else:
         weechat.prnt("", "Usage: /jchat <nickname>")
     return weechat.WEECHAT_RC_OK
+
 
 def jabber_cmd_room(data, buffer, args):
     """ Command '/jroom'. """
@@ -1767,6 +1799,7 @@ def jabber_cmd_room(data, buffer, args):
         weechat.prnt("", "Usage: /jroom <roomname>@conference.<server_FQDN> [<optional_user_nickname>]")
     return weechat.WEECHAT_RC_OK
 
+
 def jabber_cmd_jmsg(data, buffer, args):
     """ Command '/jmsg'. """
     if args:
@@ -1787,6 +1820,7 @@ def jabber_cmd_jmsg(data, buffer, args):
 
     return weechat.WEECHAT_RC_OK
 
+
 def jabber_cmd_invite(data, buffer, args):
     """ Command '/invite'. """
     if args:
@@ -1795,6 +1829,7 @@ def jabber_cmd_invite(data, buffer, args):
             context["server"].add_buddy(args)
     return weechat.WEECHAT_RC_OK
 
+
 def jabber_cmd_kick(data, buffer, args):
     """ Command '/kick'. """
     if args:
@@ -1802,6 +1837,7 @@ def jabber_cmd_kick(data, buffer, args):
         if context["server"]:
             context["server"].del_buddy(args)
     return weechat.WEECHAT_RC_OK
+
 
 def jabber_away_command_run_cb(data, buffer, command):
     """ Callback called when /away -all command is run """
@@ -1815,6 +1851,7 @@ def jabber_away_command_run_cb(data, buffer, command):
     for server in jabber_servers:
         server.set_away(message)
     return weechat.WEECHAT_RC_OK
+
 
 class AliasCommand(object):
     """Class representing a jabber alias command, ie /jabber alias ..."""
@@ -1945,7 +1982,8 @@ class AliasCommand(object):
         self.action = self.argv[0]
         if len(self.argv) > 1:
             # Pad argv list to prevent IndexError exceptions
-            while len(self.argv) < 3: self.argv.append('')
+            while len(self.argv) < 3:
+                self.argv.append('')
             self.alias = self.argv[1]
             self.jid = self.argv[2]
         return
@@ -1959,6 +1997,7 @@ class AliasCommand(object):
         self.list()
         return
 
+
 def jabber_completion_servers(data, completion_item, buffer, completion):
     """ Completion with jabber server names. """
     global jabber_servers
@@ -1966,6 +2005,7 @@ def jabber_completion_servers(data, completion_item, buffer, completion):
         weechat.hook_completion_list_add(completion, server.name,
                                          0, weechat.WEECHAT_LIST_POS_SORT)
     return weechat.WEECHAT_RC_OK
+
 
 def jabber_completion_jid_aliases(data, completion_item, buffer, completion):
     """ Completion with jabber alias names. """
@@ -1977,6 +2017,7 @@ def jabber_completion_jid_aliases(data, completion_item, buffer, completion):
 
 # ==================================[ fd ]====================================
 
+
 def jabber_fd_cb(data, fd):
     """ Callback for reading socket. """
     global jabber_servers
@@ -1986,6 +2027,7 @@ def jabber_fd_cb(data, fd):
     return weechat.WEECHAT_RC_OK
 
 # ================================[ buffers ]=================================
+
 
 def jabber_buffer_input_cb(data, buffer, input_data):
     """ Callback called for input data on a jabber buffer. """
@@ -1998,6 +2040,7 @@ def jabber_buffer_input_cb(data, buffer, input_data):
         else:
             context["server"].send_message_from_input(input=input_data)
     return weechat.WEECHAT_RC_OK
+
 
 def jabber_buffer_close_cb(data, buffer):
     """ Callback called when a jabber buffer is closed. """
@@ -2013,11 +2056,13 @@ def jabber_buffer_close_cb(data, buffer):
 
 # ==================================[ timers ]==================================
 
+
 def jabber_ping_timeout_timer(server_name, remaining_calls):
     server = jabber_search_server_by_name(server_name)
     if server:
         server.ping_time_out()
     return weechat.WEECHAT_RC_OK
+
 
 def jabber_ping_timer(server_name, remaining_calls):
     server = jabber_search_server_by_name(server_name)
@@ -2026,6 +2071,7 @@ def jabber_ping_timer(server_name, remaining_calls):
     return weechat.WEECHAT_RC_OK
 
 # ==================================[ main ]==================================
+
 
 if __name__ == "__main__" and import_ok:
     if weechat.register(SCRIPT_NAME, SCRIPT_AUTHOR, SCRIPT_VERSION,
@@ -2045,6 +2091,7 @@ if __name__ == "__main__" and import_ok:
                     server.connect()
 
 # ==================================[ end ]===================================
+
 
 def jabber_unload_script():
     """ Function called when script is unloaded. """
