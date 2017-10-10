@@ -1787,25 +1787,28 @@ def jabber_cmd_room(data, buffer, args):
     context = jabber_search_context(buffer)
     server = context["server"]
 
-    if server:
-        buddy = server.search_buddy_list(args, by='alias')
+    if not server:
+        weechat.prnt("", "Error: this command needs to be runned in a jabber server buffer, switch to a jabber buffer or use /jabber add|connect for that.")
+        return weechat.WEECHAT_RC_ERROR
 
-        if not buddy:
-            buddy = server.add_muc(room, nickname)
+    buddy = server.search_buddy_list(args, by='alias')
 
-        if not buddy.chat:
-            server.add_chat(buddy)
+    if not buddy:
+        buddy = server.add_muc(room, nickname)
 
-        if autojoin:
-            autojoins = [r.strip() for r in server.option_string("autojoin").split(',')]
-            autojoins.append(room)
-            autojoins = ", ".join(autojoins)
-            r = weechat.config_option_set(server.options["autojoin"], autojoins, 1)
+    if not buddy.chat:
+        server.add_chat(buddy)
 
-        weechat.buffer_set(buddy.chat.buffer, "display", "auto")
-        weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
-        weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
-        weechat.buffer_set(buddy.chat.buffer, "display", "auto")
+    if autojoin:
+        autojoins = [r.strip() for r in server.option_string("autojoin").split(',')]
+        autojoins.append(room)
+        autojoins = ", ".join(autojoins)
+        r = weechat.config_option_set(server.options["autojoin"], autojoins, 1)
+
+    weechat.buffer_set(buddy.chat.buffer, "display", "auto")
+    weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
+    weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
+    weechat.buffer_set(buddy.chat.buffer, "display", "auto")
 
     return weechat.WEECHAT_RC_OK
 
