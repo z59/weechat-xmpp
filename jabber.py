@@ -1727,6 +1727,8 @@ def jabber_cmd_jchat(data, buffer, args):
             if not buddy.chat:
                 context["server"].add_chat(buddy)
             weechat.buffer_set(buddy.chat.buffer, "display", "auto")
+    else:
+        weechat.prnt("", "Usage: /jchat <nickname>")
     return weechat.WEECHAT_RC_OK
 
 def jabber_cmd_room(data, buffer, args):
@@ -1761,6 +1763,8 @@ def jabber_cmd_room(data, buffer, args):
             weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
             weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
             weechat.buffer_set(buddy.chat.buffer, "display", "auto")
+    else:
+        weechat.prnt("", "Usage: /jroom <roomname>@conference.<server_FQDN> [<optional_user_nickname>]")
     return weechat.WEECHAT_RC_OK
 
 def jabber_cmd_jmsg(data, buffer, args):
