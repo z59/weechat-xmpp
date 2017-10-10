@@ -832,15 +832,22 @@ class Server:
 
     def add_muc(self, room, nickname):
         """ Add a new buddy """
+
         if not nickname:
             nickname = self.option_string("jid").split('@')[0]
+
         muc = MUC(jid=room, server=self)
         resource = "%s/%s" % (room, nickname)
+
         xmpp_room = xmpp.protocol.JID(resource)
         pres = xmpp.Presence(to=xmpp_room)
+
         self.client.send(pres)
+
         muc.resource = muc.resource.encode("utf-8")
+
         self.buddies.append(muc)
+
         return muc
 
     def display_buddies(self):
