@@ -505,6 +505,7 @@ class Server:
         self.client = xmpp.Client(server=self.buddy.domain, debug=[])
         conn = None
         server_tuple = None
+
         if server:
             if port:
                 server_tuple = (server, port)
@@ -516,6 +517,7 @@ class Server:
         # catch it and ignore.
         original_filters = warnings.filters[:]
         warnings.filterwarnings("ignore", category=DeprecationWarning)
+
         try:
             conn = self.client.connect(server=server_tuple)
         finally:
@@ -567,6 +569,7 @@ class Server:
                          % weechat.prefix("error"))
             self.ping_up = False
             self.client = None
+
         return self.is_connected()
 
     def is_connected(self):
