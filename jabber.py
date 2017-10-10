@@ -1774,6 +1774,7 @@ def jabber_cmd_room(data, buffer, args):
     argv = args.split()
     room = argv[0]
     autojoin = "-autojoin" in argv
+
     if len(argv) == 1:
         nickname = None
     elif len(argv) == 2:
@@ -1782,19 +1783,25 @@ def jabber_cmd_room(data, buffer, args):
     else:
         nickname = argv[1]
         autojoin = argv[2]
+
     context = jabber_search_context(buffer)
     server = context["server"]
+
     if server:
         buddy = server.search_buddy_list(args, by='alias')
+
         if not buddy:
             buddy = server.add_muc(room, nickname)
+
         if not buddy.chat:
             server.add_chat(buddy)
+
         if autojoin:
             autojoins = [r.strip() for r in server.option_string("autojoin").split(',')]
             autojoins.append(room)
             autojoins = ", ".join(autojoins)
             r = weechat.config_option_set(server.options["autojoin"], autojoins, 1)
+
         weechat.buffer_set(buddy.chat.buffer, "display", "auto")
         weechat.buffer_set(buddy.chat.buffer, "nicklist", "1")
         weechat.buffer_set(buddy.chat.buffer, "nicklist_display_groups", "1")
