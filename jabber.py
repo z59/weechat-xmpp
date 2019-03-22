@@ -100,7 +100,7 @@ import_ok = True
 
 try:
     import weechat
-except:
+except ImportError:
     print("This script must be run under WeeChat.")
     print("Get WeeChat now at: http://www.weechat.org/")
     import_ok = False
@@ -110,9 +110,10 @@ except:
 # outside this script, catch them and ignore.
 original_filters = warnings.filters[:]
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 try:
     import xmpp
-except:
+except ImportError:
     print("Package python-xmpp (xmpppy) must be installed to use Jabber protocol.")
     print("Get xmpppy with your package manager, or at this URL: http://xmpppy.sourceforge.net/")
     import_ok = False
