@@ -1238,6 +1238,7 @@ class Chat:
             weechat.buffer_set(self.buffer, "localvar_set_type", "private")
             weechat.buffer_set(self.buffer, "localvar_set_server", server.name)
             weechat.buffer_set(self.buffer, "localvar_set_channel", self.buddy.alias)
+            weechat.buffer_set(self.buffer, "localvar_set_nick", self.server.buddy.alias)
             weechat.hook_signal_send("logger_backlog",
                                      weechat.WEECHAT_HOOK_SIGNAL_POINTER, self.buffer)
             if switch_to_buffer:
