@@ -85,6 +85,9 @@
 #     first version (unofficial)
 #
 
+import warnings
+import re
+
 SCRIPT_NAME = "jabber"
 SCRIPT_AUTHOR = "Sebastien Helleu <flashcode@flashtux.org>"
 SCRIPT_VERSION = "1.6"
@@ -92,8 +95,6 @@ SCRIPT_LICENSE = "GPL3"
 SCRIPT_DESC = "Jabber/XMPP protocol for WeeChat"
 SCRIPT_COMMAND = SCRIPT_NAME
 
-import re
-import warnings
 
 import_ok = True
 
