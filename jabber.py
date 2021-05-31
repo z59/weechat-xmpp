@@ -918,6 +918,7 @@ class Server:
 
         xmpp_room = xmpp.protocol.JID(resource)
         pres = xmpp.Presence(to=xmpp_room)
+        pres.setTag('x', namespace='http://jabber.org/protocol/muc')
 
         self.client.send(pres)
 
