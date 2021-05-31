@@ -752,7 +752,7 @@ class Server:
         if not jid or not body:
             subject = node.getSubject()
             if subject:
-                buddy.chat.set_title(subject)
+                buddy.chat.set_title(subject.encode('utf-8'))
             return
 
         if not buddy:
